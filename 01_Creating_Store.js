@@ -32,6 +32,22 @@
 }
 
 
+
+/*
+Pure function:
+1. They always return the same result if the same arguments are passed in
+2. They depend only on the arguments passed into them.
+3. Never produce any side effects.
+*/
+
+function todos (state = [], action) {
+	if (action.type === 'ADD_TODO') {
+		return state.concat([action.todo])
+	}
+	return state
+}
+
+
 function createStore () {
 	/*
 	The store should have four parts
@@ -55,11 +71,15 @@ function createStore () {
 			listeners = listeners.filter((l) => l !== listener)
 		}
 	}
+	const dispatch = () => {
+
+	}
 
 
 	return {
 		getState,
 		subscribe,
+		dispatch,
 	}
 
 }
