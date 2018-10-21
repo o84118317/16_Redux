@@ -43,20 +43,21 @@ Pure function:
 // Reducer function
 
 function todos (state = [], action) {
-	if (action.type === 'ADD_TODO') {
-		return state.concat([action.todo])
-	} else if (action.type === 'Remove_TODO') {
-		return state.filter((todo) => todo.id !== action.id)
-	} else if (action.type ==='TOGGLE_TODO') {
-		return state.map((todo) => todo.id !== action.id ? todo : 
-			// name: todo.name,
-			// id: todo.is,
-			// complete: !todo.complete
-			Object.assign({}, todo, {complete: !todo.complete})
-		) 
-	} else {
-		return state
-	}
+	switch (action.type) {
+		case 'ADD_TODO':
+			return state.concat([action.todo])
+		case 'Remove_TODO':
+			return state.filter((todo) => todo.id !== action.id)
+		case 'TOGGLE_TODO':
+			return state.map((todo) => todo.id !== action.id ? todo : 
+				// name: todo.name,
+				// id: todo.is,
+				// complete: !todo.complete
+				Object.assign({}, todo, {complete: !todo.complete})
+			)
+		default:
+			return state 
+	}	
 }
 
 
