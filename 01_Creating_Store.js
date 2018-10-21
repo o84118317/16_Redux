@@ -45,8 +45,18 @@ Pure function:
 function todos (state = [], action) {
 	if (action.type === 'ADD_TODO') {
 		return state.concat([action.todo])
+	} else if (action.type === 'Remove_TODO') {
+		return state.filter((todo) => todo.id !== action.id)
+	} else if (action.type ==='TOGGLE_TODO') {
+		return state.map((todo) => todo.id !== action.id ? todo : 
+			// name: todo.name,
+			// id: todo.is,
+			// complete: !todo.complete
+			Object.assign({}, todo, {complete: !todo.complete})
+		) 
+	} else {
+		return state
 	}
-	return state
 }
 
 
@@ -78,7 +88,7 @@ function createStore (reducer) {
 		// call todos
 		state = reducer(state, action)
 		// loop over listeners and invoke them
-		listeners.forEach((listener) => listen())
+		listeners.forEach((listener) => listener())
 	}
 
 
