@@ -40,6 +40,8 @@ Pure function:
 3. Never produce any side effects.
 */
 
+// Reducer function
+
 function todos (state = [], action) {
 	if (action.type === 'ADD_TODO') {
 		return state.concat([action.todo])
@@ -48,7 +50,7 @@ function todos (state = [], action) {
 }
 
 
-function createStore () {
+function createStore (reducer) {
 	/*
 	The store should have four parts
 	1. the state.
@@ -71,8 +73,12 @@ function createStore () {
 			listeners = listeners.filter((l) => l !== listener)
 		}
 	}
-	const dispatch = () => {
 
+	const dispatch = (action) => {
+		// call todos
+		state = reducer(state, action)
+		// loop over listeners and invoke them
+		listeners.forEach((listener) => listen())
 	}
 
 
@@ -81,5 +87,4 @@ function createStore () {
 		subscribe,
 		dispatch,
 	}
-
 }
