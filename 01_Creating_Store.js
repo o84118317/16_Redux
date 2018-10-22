@@ -51,7 +51,7 @@ function todos (state = [], action) {
 		case 'TOGGLE_TODO':
 			return state.map((todo) => todo.id !== action.id ? todo : 
 				// name: todo.name,
-				// id: todo.is,
+				// id: todo.id,
 				// complete: !todo.complete
 				Object.assign({}, todo, {complete: !todo.complete})
 			)
