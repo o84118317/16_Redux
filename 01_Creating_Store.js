@@ -8,11 +8,7 @@ function createStore (reducer) {
 	4. Update the state  
 	*/
 	let state
-
 	let listeners = []
-
-
-
 
 	const getState = () => state
 
@@ -50,7 +46,7 @@ const REMOVE_GOAL = 'REMOVE_GOAL'
 
 
 
-// action creator
+// action creat
 
 function addTodoAction(todo) {
 	return {
