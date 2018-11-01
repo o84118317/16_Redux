@@ -8,6 +8,7 @@
   <script src='https://unpkg.com/babel-standalone@6.15.0/babel.min.js'></script>
   <script src='https://tylermcginnis.com/goals-todos-api/index.js'></script>
   <script src='https://unpkg.com/redux-thunk@2.2.0/dist/redux-thunk.min.js'></script>
+  <script src='https://unpkg.com/react-redux@5.0.6/dist/react-redux.min.js'></script>
 </head>
 <body>
   <div id='app'></div>
@@ -90,8 +91,7 @@
           .catch(() => alert('There was an error. Try again.'))
       }
     }
-
-    function handleAddTodo(name, cb) {
+    function handleAddTodo (name, cb) {
       return (dispatch) => {
         return API.saveTodo(name)
           .then((todo) => {
@@ -101,11 +101,9 @@
           .catch(() => alert('There was an error. Try again.'))
       }
     }
-
-    function handleToggle(id) {
+    function handleToggle (id) {
       return (dispatch) => {
         dispatch(toggleTodoAction(id))
-
         return API.saveTodoToggle(id)
           .catch(() => {
             dispatch(toggleTodoAction(id))
@@ -113,8 +111,7 @@
           })
       }
     }
-
-    function handleInitialData() {
+    function handleInitialData () {
       return (dispatch) => {
         return Promise.all([
           API.fetchTodos(),
@@ -124,7 +121,6 @@
         })
       }
     }
-
     const checker = (store) => (next) => (action) => {
       if (
         action.type === ADD_TODO &&
@@ -148,7 +144,6 @@
       console.groupEnd()
       return result
     }
-
     // Reducer function
     function todos (state = [], action) {
       switch(action.type) {
@@ -213,17 +208,16 @@
     class Todos extends React.Component {
       addItem = (e) => {
         e.preventDefault()
-
-        this.props.store.dispatch(handleAddTodo(
+        this.props.dispatch(handleAddTodo(
           this.input.value,
           () => this.input.value = ''
         ))
       }
       removeItem = (todo) => {
-        this.props.store.dispatch(handleDeleteTodo(todo))
+        this.props.dispatch(handleDeleteTodo(todo))
       }
       toggleItem = (id) => {
-        this.props.store.dispatch(handleToggle(id))
+        this.props.dispatch(handleToggle(id))
       }
       render() {
         return (
@@ -244,16 +238,21 @@
         )
       }
     }
+
+    const ConnectedTodos = ReactRedux.connect((state) => ({
+      todos: state.todos
+    }))(Todos)
+
     class Goals extends React.Component {
       addItem = (e) => {
         e.preventDefault()
-        this.props.store.dispatch(handleAddGoal(
+        this.props.dispatch(handleAddGoal(
           this.input.value,
           () => this.input.value = ''
         ))
       }
       removeItem = (goal) => {
-        this.props.store.dispatch(handleDeleteGoal(goal))
+        this.props.dispatch(handleDeleteGoal(goal))
       }
       render() {
         return (
@@ -273,30 +272,39 @@
         )
       }
     }
+
+    const ConnectedGoals = ReactRedux.connect((state) => ({
+      goals: state.goals
+    }))(Goals)
+
     class App extends React.Component {
       componentDidMount () {
-        const { store } = this.props
-
-        store.dispatch(handleInitialData())
-
-        store.subscribe(() => this.forceUpdate())
+        const { dispatch } = this.props
+        dispatch(handleInitialData())
       }
       render() {
-        const { store } = this.props
-        const { todos, goals, loading } = store.getState()
+        const { loading } = this.props
         if (loading === true) {
           return <h3>Loading</h3>
         }
         return (
           <div>
-            <Todos todos={todos} store={store} />
-            <Goals goals={goals} store={store}/>
+            <ConnectedTodos />
+            <ConnectedGoals />
           </div>
         )
       }
     }
+    
+    const ConnectedApp = ReactRedux.connect((state) => ({
+      loading: state.loading
+    }))(App)
+
+
     ReactDOM.render(
-      <App store={store} />,
+      <ReactRedux.Provider store={store}>
+        <ConnectedApp />
+      </ReactRedux.Provider>,
       document.getElementById('app')
     )
   </script>
